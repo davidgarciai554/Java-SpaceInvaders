@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -49,7 +50,9 @@ public class VentanaJuego extends javax.swing.JFrame {
     Marciano marciano = new Marciano(ANCHOPANTALLA);//inicializo el marciano
     Nave miNave = new Nave();
     Disparo miDisparo = new Disparo();
+    ArrayList <Disparo> listaDisparos = new ArrayList(); 
 
+    
     //el array de dos dimensiones que guarda la lista de marcianos
     Marciano[][] listaMarcianos = new Marciano[filasMarcianos][columnasMarcianos];
     //dirección en la que se mueve el grupo de marcianos
@@ -125,6 +128,22 @@ public class VentanaJuego extends javax.swing.JFrame {
         }
     }
 
+    private void pintaDisparos( Graphics2D g2){
+        //pinta todos los disparos 
+        Disparo disparoAux;
+        for (int i=0; i< listaDisparos.size(); i++){
+            disparoAux = listaDisparos.get(i);
+            disparoAux.mueve();
+            if (disparoAux.posY < 0){
+                listaDisparos.remove(i);
+            }
+            else{
+                g2.drawImage(disparoAux.imagen, disparoAux.posX, disparoAux.posY, null);
+            }    
+        }
+    }
+    
+    
     private void bucleJuego() {//redibuja los objetos en el jPanel1
 
         Graphics2D g2 = (Graphics2D) buffer.getGraphics();//borro todo lo que ahi en el buffer
@@ -136,9 +155,8 @@ public class VentanaJuego extends javax.swing.JFrame {
         pintaMarcianos(g2);
         //dibujo la nave
         g2.drawImage(miNave.imagen, miNave.posX, miNave.posY, null);
-        g2.drawImage(miDisparo.imagen, miDisparo.posX, miDisparo.posY, null);
+        pintaDisparos(g2);
         miNave.mueve();
-        miDisparo.mueve();
         chequeaColision();
         ///////////////////////////////////////////////////
         g2 = (Graphics2D) jPanel1.getGraphics();//dibujo de golpe el buffer sobre el jPanel
@@ -235,7 +253,10 @@ public class VentanaJuego extends javax.swing.JFrame {
                 miNave.setPulsadoDerecha(true);
                 break;
             case KeyEvent.VK_SPACE:
-                miDisparo.posicionaDisparo(miNave);
+                Disparo d = new Disparo();
+                d.posicionaDisparo(miNave);
+                //agregamos el disparo a la lista de disparos
+                listaDisparos.add(d);
                 break;
         }
     }//GEN-LAST:event_formKeyPressed
