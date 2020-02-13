@@ -228,7 +228,7 @@ public class VentanaJuego extends javax.swing.JFrame {
                         e.imagen2 = imagenes[22];
                         listaExplosiones.add(e);
                         
-                        listaMarcianos[i][j].posY = 2000;
+                        listaMarcianos[i][j].posX = 2000;
                         listaDisparos.remove(k);
                     }
                 }
