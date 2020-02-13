@@ -1,6 +1,7 @@
 package codigo;
 
 import java.awt.Image;
+import javax.sound.sampled.Clip;
 
 /**
  *
@@ -14,6 +15,8 @@ public class Explosion {
     public int posY = 0;
     
     public int tiempoDeVida = 50;
+    
+    Clip sonidoExplosion;
     
     
 }
