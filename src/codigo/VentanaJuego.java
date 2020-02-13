@@ -5,6 +5,7 @@
  */
 package codigo;
 
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -14,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.Timer;
@@ -47,9 +49,9 @@ public class VentanaJuego extends javax.swing.JFrame {
     Marciano marciano = new Marciano(ANCHOPANTALLA);//inicializo el marciano
     Nave miNave = new Nave();
     Disparo miDisparo = new Disparo();
-    ArrayList <Disparo> listaDisparos = new ArrayList(); 
-    ArrayList <Explosion> listaExplosiones = new ArrayList();
-    
+    ArrayList<Disparo> listaDisparos = new ArrayList();
+    ArrayList<Explosion> listaExplosiones = new ArrayList();
+
     //el array de dos dimensiones que guarda la lista de marcianos
     Marciano[][] listaMarcianos = new Marciano[filasMarcianos][columnasMarcianos];
     //dirección en la que se mueve el grupo de marcianos
@@ -79,8 +81,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         imagenes[21] = plantilla.getSubimage(66, 320, 64, 32);
         imagenes[23] = plantilla.getSubimage(255, 320, 32, 32);//explosion parteB
         imagenes[22] = plantilla.getSubimage(255, 289, 32, 32);//explosion parteA
-        
-                
+
         setSize(ANCHOPANTALLA, ALTOPANTALLA);
         jPanel1.setSize(ANCHOPANTALLA, ALTOPANTALLA);
         buffer = (BufferedImage) jPanel1.createImage(ANCHOPANTALLA, ALTOPANTALLA);//inicializo el buffer
@@ -139,46 +140,42 @@ public class VentanaJuego extends javax.swing.JFrame {
         }
     }
 
-    private void pintaDisparos( Graphics2D g2){
+    private void pintaDisparos(Graphics2D g2) {
         //pinta todos los disparos 
         Disparo disparoAux;
-        for (int i=0; i< listaDisparos.size(); i++){
+        for (int i = 0; i < listaDisparos.size(); i++) {
             disparoAux = listaDisparos.get(i);
             disparoAux.mueve();
-            if (disparoAux.posY < 0){
+            if (disparoAux.posY < 0) {
                 listaDisparos.remove(i);
-            }
-            else{
+            } else {
                 g2.drawImage(disparoAux.imagen, disparoAux.posX, disparoAux.posY, null);
-            }    
+            }
         }
     }
-   
-    
-    private void pintaExplosiones( Graphics2D g2){
+
+    private void pintaExplosiones(Graphics2D g2) {
         //pinta todas las explosiones 
         Explosion explosionAux;
-        for (int i=0; i< listaExplosiones.size(); i++){
+        for (int i = 0; i < listaExplosiones.size(); i++) {
             explosionAux = listaExplosiones.get(i);
-            explosionAux.tiempoDeVida --;
-            if (explosionAux.tiempoDeVida > 25 ){
-                g2.drawImage(explosionAux.imagen1, 
-                            explosionAux.posX, 
-                            explosionAux.posY, null);
+            explosionAux.tiempoDeVida--;
+            if (explosionAux.tiempoDeVida > 25) {
+                g2.drawImage(explosionAux.imagen1,
+                        explosionAux.posX,
+                        explosionAux.posY, null);
+            } else {
+                g2.drawImage(explosionAux.imagen2,
+                        explosionAux.posX,
+                        explosionAux.posY, null);
             }
-            else{
-                g2.drawImage(explosionAux.imagen2, 
-                            explosionAux.posX, 
-                            explosionAux.posY, null);
-            } 
             //si el tiempo de vida de la explosión es menor o igual a 0 la elimino
-            if (explosionAux.tiempoDeVida <=0){
+            if (explosionAux.tiempoDeVida <= 0) {
                 listaExplosiones.remove(i);
             }
         }
     }
-        
-    
+
     private void bucleJuego() {//redibuja los objetos en el jPanel1
 
         Graphics2D g2 = (Graphics2D) buffer.getGraphics();//borro todo lo que ahi en el buffer
@@ -203,7 +200,7 @@ public class VentanaJuego extends javax.swing.JFrame {
     private void chequeaColision() {
         Rectangle2D.Double rectanguloMarciano = new Rectangle2D.Double();
         Rectangle2D.Double rectanguloDisparo = new Rectangle2D.Double();
-        
+
         for (int k = 0; k < listaDisparos.size(); k++) {
             //calculo el rectangulo que contiene al disparo correspondiente
             rectanguloDisparo.setFrame(listaDisparos.get(k).posX,
@@ -227,14 +224,33 @@ public class VentanaJuego extends javax.swing.JFrame {
                         e.imagen1 = imagenes[23];
                         e.imagen2 = imagenes[22];
                         listaExplosiones.add(e);
-                        
+
+                        sonidoExplosion _sonidoLadrillo = new sonidoExplosion();
+                        _sonidoLadrillo.start();
+
                         listaMarcianos[i][j].posX = 2000;
                         listaDisparos.remove(k);
                     }
                 }
             }
         }
-        
+
+    }
+
+    public class sonidoExplosion extends Thread {//Creamos un hilo para que  												
+
+        public void run() {                     //reproduzca el sonido a la vez
+            ReproducirSonidos s = new ReproducirSonidos(); //que sigue el juego
+            s.ReproducirSonido(s.getClass().getResource("/sonidos/explosion.wav").getFile());
+        }
+    }
+
+    public class sonidoLaser extends Thread {//Creamos un hilo para que  												
+
+        public void run() {                     //reproduzca el sonido a la vez
+            ReproducirSonidos s = new ReproducirSonidos(); //que sigue el juego
+            s.ReproducirSonido(s.getClass().getResource("/sonidos/laser.wav").getFile());
+        }
     }
 
     /**
@@ -298,6 +314,8 @@ public class VentanaJuego extends javax.swing.JFrame {
             case KeyEvent.VK_SPACE:
                 Disparo d = new Disparo();
                 d.posicionaDisparo(miNave);
+                sonidoLaser _sonidoLaser = new sonidoLaser();
+                _sonidoLaser.start();
                 //agregamos el disparo a la lista de disparos
                 listaDisparos.add(d);
                 break;
