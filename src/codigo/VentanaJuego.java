@@ -168,29 +168,29 @@ public class VentanaJuego extends javax.swing.JFrame {
         Rectangle2D.Double rectanguloMarciano = new Rectangle2D.Double();
         Rectangle2D.Double rectanguloDisparo = new Rectangle2D.Double();
         
-        //calculo el rectangulo que contiene al disparo
-        rectanguloDisparo.setFrame(miDisparo.posX,
-                                    miDisparo.posY, 
-                                    miDisparo.imagen.getWidth(null),
-                                    miDisparo.imagen.getHeight(null));
-        
-        for(int i=0; i<filasMarcianos; i++){
-            for (int j=0; j<columnasMarcianos; j++){
-                //calculo el rectángulo corresponmdiente al marciano que estoy comprobando
-                rectanguloMarciano.setFrame(listaMarcianos[i][j].posX,
-                                            listaMarcianos[i][j].posY,
-                                            listaMarcianos[i][j].imagen1.getWidth(null),
-                                            listaMarcianos[i][j].imagen1.getHeight(null)
-                );
-                if (rectanguloDisparo.intersects(rectanguloMarciano)){
-                    //si entra aquí es porque han chocado un marciano y el disparo
-                    listaMarcianos[i][j].posY = 2000;
-                    miDisparo.posY = -2000;
-                    
+        for (int k = 0; k < listaDisparos.size(); k++) {
+            //calculo el rectangulo que contiene al disparo correspondiente
+            rectanguloDisparo.setFrame(listaDisparos.get(k).posX,
+                    listaDisparos.get(k).posY,
+                    listaDisparos.get(k).imagen.getWidth(null),
+                    listaDisparos.get(k).imagen.getHeight(null));
+
+            for (int i = 0; i < filasMarcianos; i++) {
+                for (int j = 0; j < columnasMarcianos; j++) {
+                    //calculo el rectángulo corresponmdiente al marciano que estoy comprobando
+                    rectanguloMarciano.setFrame(listaMarcianos[i][j].posX,
+                            listaMarcianos[i][j].posY,
+                            listaMarcianos[i][j].imagen1.getWidth(null),
+                            listaMarcianos[i][j].imagen1.getHeight(null)
+                    );
+                    if (rectanguloDisparo.intersects(rectanguloMarciano)) {
+                        //si entra aquí es porque han chocado un marciano y el disparo
+                        listaMarcianos[i][j].posY = 2000;
+                        listaDisparos.remove(k);
+                    }
                 }
             }
         }
-        
         
     }
     
