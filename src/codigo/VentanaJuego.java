@@ -241,15 +241,15 @@ public class VentanaJuego extends javax.swing.JFrame {
 
         public void run() {                     //reproduzca el sonido a la vez
             ReproducirSonidos s = new ReproducirSonidos(); //que sigue el juego
-            s.ReproducirSonido(s.getClass().getResource("/sonidos/explosion.wav").getFile());
+            s.ReproducirSonido(s.getClass().getResource("/sonidos/resplandorBUM.wav").getFile());
         }
     }
 
     public class sonidoLaser extends Thread {//Creamos un hilo para que  												
 
-        public void run() {                     //reproduzca el sonido a la vez
+        public void run() {                     //reproduzca el sonido a la  vez
             ReproducirSonidos s = new ReproducirSonidos(); //que sigue el juego
-            s.ReproducirSonido(s.getClass().getResource("/sonidos/laser.wav").getFile());
+            s.ReproducirSonido(s.getClass().getResource("/sonidos/disparosXBOX.wav").getFile());
         }
     }
 
