@@ -78,8 +78,8 @@ public class VentanaJuego extends javax.swing.JFrame {
         }
         imagenes[20] = plantilla.getSubimage(0, 320, 66, 32); //sprite de la nave
         imagenes[21] = plantilla.getSubimage(66, 320, 64, 32);
-        imagenes[22] = plantilla.getSubimage(130, 320, 64, 32);//explosion parteB
-        imagenes[23] = plantilla.getSubimage(194, 320, 64, 32);//explosion parteA
+        imagenes[23] = plantilla.getSubimage(255, 320, 32, 32);//explosion parteB
+        imagenes[22] = plantilla.getSubimage(255, 289, 32, 32);//explosion parteA
         
                 
         setSize(ANCHOPANTALLA, ALTOPANTALLA);
