@@ -242,6 +242,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         public void run() {                     //reproduzca el sonido a la vez
             ReproducirSonidos s = new ReproducirSonidos(); //que sigue el juego
             s.ReproducirSonido(s.getClass().getResource("/sonidos/resplandorBUM.wav").getFile());
+            //s.ReproducirSonido(s.getClass().getResource("/sonidos/explosion.wav").getFile());
         }
     }
 
@@ -250,6 +251,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         public void run() {                     //reproduzca el sonido a la  vez
             ReproducirSonidos s = new ReproducirSonidos(); //que sigue el juego
             s.ReproducirSonido(s.getClass().getResource("/sonidos/disparosXBOX.wav").getFile());
+            //s.ReproducirSonido(s.getClass().getResource("/sonidos/laser.wav").getFile());
         }
     }
 
