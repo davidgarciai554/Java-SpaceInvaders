@@ -15,8 +15,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Timer;
 
@@ -51,7 +49,7 @@ public class VentanaJuego extends javax.swing.JFrame {
     Nave miNave = new Nave();
     Disparo miDisparo = new Disparo();
     ArrayList <Disparo> listaDisparos = new ArrayList(); 
-
+    ArrayList <Explosion> listaExplosiones = new ArrayList();
     
     //el array de dos dimensiones que guarda la lista de marcianos
     Marciano[][] listaMarcianos = new Marciano[filasMarcianos][columnasMarcianos];
@@ -80,7 +78,9 @@ public class VentanaJuego extends javax.swing.JFrame {
         }
         imagenes[20] = plantilla.getSubimage(0, 320, 66, 32); //sprite de la nave
         imagenes[21] = plantilla.getSubimage(66, 320, 64, 32);
-                
+        imagenes[22] = plantilla.getSubimage(130, 320, 64, 32);//explosion parteB
+        imagenes[23] = plantilla.getSubimage(194, 320, 64, 32);//explosion parteA
+        
                 
         setSize(ANCHOPANTALLA, ALTOPANTALLA);
         jPanel1.setSize(ANCHOPANTALLA, ALTOPANTALLA);
@@ -142,7 +142,31 @@ public class VentanaJuego extends javax.swing.JFrame {
             }    
         }
     }
+   
     
+    private void pintaExplosiones( Graphics2D g2){
+        //pinta todas las explosiones 
+        Explosion explosionAux;
+        for (int i=0; i< listaExplosiones.size(); i++){
+            explosionAux = listaExplosiones.get(i);
+            explosionAux.tiempoDeVida --;
+            if (explosionAux.tiempoDeVida > 25 ){
+                g2.drawImage(explosionAux.imagen1, 
+                            explosionAux.posX, 
+                            explosionAux.posY, null);
+            }
+            else{
+                g2.drawImage(explosionAux.imagen2, 
+                            explosionAux.posX, 
+                            explosionAux.posY, null);
+            } 
+            //si el tiempo de vida de la explosión es menor o igual a 0 la elimino
+            if (explosionAux.tiempoDeVida <=0){
+                listaExplosiones.remove(i);
+            }
+        }
+    }
+        
     
     private void bucleJuego() {//redibuja los objetos en el jPanel1
 
@@ -156,6 +180,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         //dibujo la nave
         g2.drawImage(miNave.imagen, miNave.posX, miNave.posY, null);
         pintaDisparos(g2);
+        pintaExplosiones(g2);
         miNave.mueve();
         chequeaColision();
         ///////////////////////////////////////////////////
@@ -185,6 +210,13 @@ public class VentanaJuego extends javax.swing.JFrame {
                     );
                     if (rectanguloDisparo.intersects(rectanguloMarciano)) {
                         //si entra aquí es porque han chocado un marciano y el disparo
+                        Explosion e = new Explosion();
+                        e.posX = listaMarcianos[i][j].posX;
+                        e.posY = listaMarcianos[i][j].posY;
+                        e.imagen1 = imagenes[23];
+                        e.imagen2 = imagenes[22];
+                        listaExplosiones.add(e);
+                        
                         listaMarcianos[i][j].posY = 2000;
                         listaDisparos.remove(k);
                     }
