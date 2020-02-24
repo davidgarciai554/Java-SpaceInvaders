@@ -19,7 +19,7 @@ public class Marciano {
 
     public int posX = 0;
     public int posY = 0;
-
+    public int velocidad=1;
     private int anchoPantalla;
 
     public int vida = 50;
@@ -33,7 +33,7 @@ public class Marciano {
         if (direccion) {
             posX++;
         } else {
-            posX--;
+            posX-=velocidad;
         }
     }
 }
