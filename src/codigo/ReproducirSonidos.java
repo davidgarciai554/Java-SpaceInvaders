@@ -12,15 +12,16 @@ import java.net.URL;
  *
  * @author usuario
  */
-public class ReproducirSonidos {
-     public void ReproducirSonido(String fichero) {
+public class ReproducirSonidos extends Thread {
+
+    public void ReproducirSonido(String fichero ,int tiempo) {
         AudioClip sonido;
         URL url;
         try {
             url = new URL("file:" + fichero);
             sonido = java.applet.Applet.newAudioClip(url);
             sonido.play();
-            Thread.sleep(1200);
+            Thread.sleep(tiempo);
             sonido.loop();
             sonido.stop();
         } catch (Exception e) {
