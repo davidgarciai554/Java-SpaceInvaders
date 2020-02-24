@@ -38,7 +38,7 @@ public class VentanaJuego extends javax.swing.JFrame {
 
     Random aleatorio = new Random();
 
-    int disparoMarciano;
+    int disparoMarciano, disparoMarciano1, disparoMarciano2;
 
     public static Label label1 = new Label();
 
@@ -164,7 +164,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         for (int i = 0; i < listaDisparosMarciano.size(); i++) {
             aux = listaDisparosMarciano.get(i);
             aux.mueveDisparoMarciano();
-            if (aux.posY < 0) {
+            if (aux.posY > ALTOPANTALLA) {
                 listaDisparosMarciano.remove(i);
             } else {
                 g2.drawImage(aux.imagen, aux.posX, aux.posY, null);
@@ -196,7 +196,9 @@ public class VentanaJuego extends javax.swing.JFrame {
 
     private void bucleJuego() {//redibuja los objetos en el jPanel1
 
-        disparoMarciano = aleatorio.nextInt(50);
+        disparoMarciano = aleatorio.nextInt(100);
+        disparoMarciano1 = aleatorio.nextInt(100);
+        disparoMarciano2 = aleatorio.nextInt(100);
 
         Graphics2D g2 = (Graphics2D) buffer.getGraphics();//borro todo lo que ahi en el buffer
 
@@ -205,19 +207,17 @@ public class VentanaJuego extends javax.swing.JFrame {
         pintaMarcianos(g2);
         ///////////////////////////////////////////////////
         contador++;
-        if (disparoMarciano == contador) {
+        if (disparoMarciano == contador || disparoMarciano1 == contador || disparoMarciano2 == contador) {
             Disparo d = new Disparo();
             d.posicionaDisparoMarciano(listaMarcianos[aleatorio.nextInt(filasMarcianos)][aleatorio.nextInt(filasMarcianos)]);
             listaDisparosMarciano.add(d);
-            
-            System.out.print("Hola");
         }
         //dibujo la nave
         g2.drawImage(miNave.imagen, miNave.posX, miNave.posY, null);
 
         pintaDisparoNave(g2);
         pintaDisparoMarciano(g2);
-        
+
         pintaExplosiones(g2);
         miNave.mueve();
         chequeaColision();
@@ -233,25 +233,14 @@ public class VentanaJuego extends javax.swing.JFrame {
         Rectangle2D.Double rectanguloDisparo = new Rectangle2D.Double();
         Rectangle2D.Double rectanguloNave = new Rectangle2D.Double();
         Rectangle2D.Double rectanguloDisparoMarciano = new Rectangle2D.Double();
-//        rectanguloNave.setFrame(miNave.posX,
-//                miNave.posY,
-//                miNave.imagen.getWidth(null),
-//                miNave.imagen.getHeight(null));
-        for (int k = 0; k < listaDisparos.size(); k++) {
-            //calculo el rectangulo que contiene al disparo correspondiente
-            rectanguloDisparo.setFrame(listaDisparos.get(k).posX,
-                    listaDisparos.get(k).posY,
-                    listaDisparos.get(k).imagen.getWidth(null),
-                    listaDisparos.get(k).imagen.getHeight(null));
 
+        //Calculo el choque del disparo de la nave con los marcianos
+        for (int k = 0; k < listaDisparos.size(); k++) {
+            rectanguloDisparo.setFrame(listaDisparos.get(k).posX, listaDisparos.get(k).posY, listaDisparos.get(k).imagen.getWidth(null), listaDisparos.get(k).imagen.getHeight(null));
             for (int i = 0; i < filasMarcianos; i++) {
                 for (int j = 0; j < columnasMarcianos; j++) {
                     //calculo el rectángulo corresponmdiente al marciano que estoy comprobando
-                    rectanguloMarciano.setFrame(listaMarcianos[i][j].posX,
-                            listaMarcianos[i][j].posY,
-                            listaMarcianos[i][j].imagen1.getWidth(null),
-                            listaMarcianos[i][j].imagen1.getHeight(null)
-                    );
+                    rectanguloMarciano.setFrame(listaMarcianos[i][j].posX, listaMarcianos[i][j].posY, listaMarcianos[i][j].imagen1.getWidth(null), listaMarcianos[i][j].imagen1.getHeight(null));
 
                     if (rectanguloDisparo.intersects(rectanguloMarciano)) {
                         //si entra aquí es porque han chocado un marciano y el disparo
@@ -270,32 +259,27 @@ public class VentanaJuego extends javax.swing.JFrame {
                         label1.setText("" + puntuacion);
                         listaDisparos.remove(k);
                     }
-
                 }
             }
         }
-        for (int i = 0; i < filasMarcianos; i++) {
-            for (int j = 0; j < columnasMarcianos; j++) {
-                //calculo el rectángulo corresponmdiente al marciano que estoy comprobando
-                rectanguloMarciano.setFrame(listaMarcianos[i][j].posX,
-                        listaMarcianos[i][j].posY,
-                        listaMarcianos[i][j].imagen1.getWidth(null),
-                        listaMarcianos[i][j].imagen1.getHeight(null)
-                );
-                rectanguloNave.setFrame(miNave.posX,
-                        miNave.posY,
-                        miNave.imagen.getWidth(null),
-                        miNave.imagen.getHeight(null));
+        
+        //Comparo el choque de los marcianos y de sus disparos con la nave
+        for (int k = 0; k < listaDisparosMarciano.size(); k++) {
+            rectanguloDisparoMarciano.setFrame(listaDisparosMarciano.get(k).posX,
+                    listaDisparosMarciano.get(k).posY,
+                    listaDisparosMarciano.get(k).imagen.getWidth(null),
+                    listaDisparosMarciano.get(k).imagen.getHeight(null));
 
-                if (rectanguloNave.intersects(rectanguloMarciano)) {
-
-                    System.out.println("Choque");
-                    temporizador.stop();
-                }
-
+            rectanguloNave.setFrame(miNave.posX,
+                    miNave.posY,
+                    miNave.imagen.getWidth(null),
+                    miNave.imagen.getHeight(null));
+            if (rectanguloNave.intersects(rectanguloMarciano) || rectanguloNave.intersects(rectanguloDisparoMarciano)) {
+                System.out.println("Choque");
+                temporizador.stop();
             }
-        }
 
+        }
     }
 
     public class sonidoExplosion extends Thread {//Creamos un hilo para que  												
