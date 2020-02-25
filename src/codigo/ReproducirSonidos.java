@@ -13,7 +13,7 @@ import java.net.URL;
  * @author usuario
  */
 public class ReproducirSonidos extends Thread {
-
+    public AudioClip sonido;
     public void ReproducirSonido(String fichero ,int tiempo) {
         AudioClip sonido;
         URL url;

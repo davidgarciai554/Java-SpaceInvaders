@@ -6,7 +6,6 @@
 package codigo;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Label;
@@ -19,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 import javax.swing.Timer;
 
 /**
@@ -28,19 +26,22 @@ import javax.swing.Timer;
  */
 public class VentanaJuego extends javax.swing.JFrame {
 
-    static int ANCHOPANTALLA = 1000;
+    static int ANCHOPANTALLA = 1200;
     static int ALTOPANTALLA = 700;
 
-    int filasMarcianos = 5;
+    int filasMarcianos = 8;
     int columnasMarcianos = 10;
     int contador = 0;
     int puntuacion = 0;
+    int marcianosMuertos = 0;
 
     Random aleatorio = new Random();
 
     int disparoMarciano, disparoMarciano1, disparoMarciano2;
 
     public static Label label1 = new Label();
+
+    Graphics2D g2;
 
     BufferedImage buffer = null;
     //buffer para guardar las imágenes de todos los marcianos
@@ -200,7 +201,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         disparoMarciano1 = aleatorio.nextInt(100);
         disparoMarciano2 = aleatorio.nextInt(100);
 
-        Graphics2D g2 = (Graphics2D) buffer.getGraphics();//borro todo lo que ahi en el buffer
+        g2 = (Graphics2D) buffer.getGraphics();//borro todo lo que ahi en el buffer
 
         g2.setColor(Color.BLACK);//doy el color negro a la pantalla
         g2.fillRect(0, 0, ANCHOPANTALLA, ALTOPANTALLA);
@@ -253,6 +254,14 @@ public class VentanaJuego extends javax.swing.JFrame {
 
                         sonidoExplosion s = new sonidoExplosion();
                         s.start();
+                        marcianosMuertos++;
+                        if (marcianosMuertos == (filasMarcianos * columnasMarcianos)) {
+                            temporizador.stop();
+                            try {
+                                g2.drawImage(ImageIO.read(getClass().getResource("/imagenes/victoria.png")), 0, 0, ANCHOPANTALLA, ALTOPANTALLA, null);
+                            } catch (IOException ex) {
+                            }
+                        }
 
                         listaMarcianos[i][j].posX = 2000;
                         puntuacion += 50;
@@ -262,7 +271,7 @@ public class VentanaJuego extends javax.swing.JFrame {
                 }
             }
         }
-        
+
         //Comparo el choque de los marcianos y de sus disparos con la nave
         for (int k = 0; k < listaDisparosMarciano.size(); k++) {
             rectanguloDisparoMarciano.setFrame(listaDisparosMarciano.get(k).posX,
@@ -277,6 +286,10 @@ public class VentanaJuego extends javax.swing.JFrame {
             if (rectanguloNave.intersects(rectanguloMarciano) || rectanguloNave.intersects(rectanguloDisparoMarciano)) {
                 System.out.println("Choque");
                 temporizador.stop();
+                try {
+                    g2.drawImage(ImageIO.read(getClass().getResource("/imagenes/gameOver.png")), 0, 0, ANCHOPANTALLA, ALTOPANTALLA, null);
+                } catch (IOException ex) {
+                }
             }
 
         }
@@ -337,7 +350,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1000, Short.MAX_VALUE)
+            .addGap(0, 1372, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -349,10 +362,10 @@ public class VentanaJuego extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addGap(976, 976, 976))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
