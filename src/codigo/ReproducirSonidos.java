@@ -12,7 +12,11 @@ import java.net.URL;
  *
  * @author usuario
  */
-public class ReproducirSonidos extends Thread {
+
+// @David: Aquí he quitado "extends Thread" porque no es un hilo. Es una clase normal, sin más.
+// De hecho, no llamas al método "run".
+
+public class ReproducirSonidos { //extends Thread {
     public AudioClip sonido;
     public void ReproducirSonido(String fichero ,int tiempo) {
         AudioClip sonido;

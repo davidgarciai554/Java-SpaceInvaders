@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.Timer;
+import java.applet.AudioClip;
 
 /**
  *
@@ -26,6 +27,10 @@ import javax.swing.Timer;
  */
 public class VentanaJuego extends javax.swing.JFrame {
 
+    // Objetos AudioClip que contiene el sonido de fondo del juego
+    static AudioClip audioclipSf;
+    static sonidoFondo sf = new sonidoFondo();
+            
     static int ANCHOPANTALLA = 1200;
     static int ALTOPANTALLA = 700;
 
@@ -52,7 +57,6 @@ public class VentanaJuego extends javax.swing.JFrame {
         @Override
         public void actionPerformed(ActionEvent ae) {
             //TODO: codigo de animacion
-
             bucleJuego();
         }
     });
@@ -75,8 +79,6 @@ public class VentanaJuego extends javax.swing.JFrame {
      */
     public VentanaJuego() {
         initComponents();
-        sonidoFondo s = new sonidoFondo();
-        s.start();
 
         try {
             plantilla = ImageIO.read(getClass().getResource("/imagenes/invaders2.png"));
@@ -122,6 +124,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         }
         disparoNave.posY = -2000;
         jPanel1.add(label1);
+        audioclipSf = sf.sonar();
     }
 
     private void pintaMarcianos(Graphics2D _g2) {
@@ -259,6 +262,7 @@ public class VentanaJuego extends javax.swing.JFrame {
                             temporizador.stop();
                             try {
                                 g2.drawImage(ImageIO.read(getClass().getResource("/imagenes/victoria.png")), 0, 0, ANCHOPANTALLA, ALTOPANTALLA, null);
+                                audioclipSf.stop();
                             } catch (IOException ex) {
                             }
                         }
@@ -287,37 +291,13 @@ public class VentanaJuego extends javax.swing.JFrame {
                 System.out.println("Choque");
                 temporizador.stop();
                 try {
-                    g2.drawImage(ImageIO.read(getClass().getResource("/imagenes/gameOver.png")), 0, 0, ANCHOPANTALLA, ALTOPANTALLA, null);
+                    g2.drawImage(ImageIO.read(getClass().getResource("/imagenes/gameover.png")), 0, 0, ANCHOPANTALLA, ALTOPANTALLA, null);
+                    // Paramos el AudioClip del sonido de fondo
+                    audioclipSf.stop();
                 } catch (IOException ex) {
                 }
             }
 
-        }
-    }
-
-    public class sonidoExplosion extends Thread {//Creamos un hilo para que  												
-
-        public void run() {                     //reproduzca el sonido a la vez
-            ReproducirSonidos s = new ReproducirSonidos(); //que sigue el juego
-//            s.ReproducirSonido(s.getClass().getResource("/sonidos/resplandorBUM.wav").getFile());
-            s.ReproducirSonido(s.getClass().getResource("/sonidos/explosion.wav").getFile(), 1200);
-        }
-    }
-
-    public class sonidoLaser extends Thread {//Creamos un hilo para que  												
-
-        public void run() {                     //reproduzca el sonido a la  vez
-            ReproducirSonidos s = new ReproducirSonidos(); //que sigue el juego
-//            s.ReproducirSonido(s.getClass().getResource("/sonidos/disparosXBOX.wav").getFile());
-            s.ReproducirSonido(s.getClass().getResource("/sonidos/laser.wav").getFile(), 1200);
-        }
-    }
-
-    public class sonidoFondo extends Thread {//Creamos un hilo para que  												
-
-        public void run() {                     //reproduzca el sonido a la  vez
-            ReproducirSonidos s = new ReproducirSonidos(); //que sigue el juego
-            s.ReproducirSonido(s.getClass().getResource("/sonidos/sonidoFondo.wav").getFile(), 71000);
         }
     }
 
