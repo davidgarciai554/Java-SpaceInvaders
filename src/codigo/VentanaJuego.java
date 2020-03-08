@@ -29,7 +29,7 @@ public class VentanaJuego extends javax.swing.JFrame {
 
     // Objetos AudioClip que contiene el sonido de fondo del juego
     static AudioClip audioclipSf;
-    static sonidoFondo sf = new sonidoFondo();
+    static sonido sf = new sonido();
             
     static int ANCHOPANTALLA = 1200;
     static int ALTOPANTALLA = 700;
@@ -124,7 +124,7 @@ public class VentanaJuego extends javax.swing.JFrame {
         }
         disparoNave.posY = -2000;
         jPanel1.add(label1);
-        audioclipSf = sf.sonar();
+        audioclipSf = sf.musicaFondo("/sonidos/sonidoFondo.wav");
     }
 
     private void pintaMarcianos(Graphics2D _g2) {
@@ -255,8 +255,10 @@ public class VentanaJuego extends javax.swing.JFrame {
                         e.imagen2 = imagenes[22];
                         listaExplosiones.add(e);
 
-                        sonidoExplosion s = new sonidoExplosion();
+                        sonido s = new sonido();
+                        s._url="/sonidos/explosion.wav";
                         s.start();
+
                         marcianosMuertos++;
                         if (marcianosMuertos == (filasMarcianos * columnasMarcianos)) {
                             temporizador.stop();
@@ -288,7 +290,6 @@ public class VentanaJuego extends javax.swing.JFrame {
                     miNave.imagen.getWidth(null),
                     miNave.imagen.getHeight(null));
             if (rectanguloNave.intersects(rectanguloMarciano) || rectanguloNave.intersects(rectanguloDisparoMarciano)) {
-                System.out.println("Choque");
                 temporizador.stop();
                 try {
                     g2.drawImage(ImageIO.read(getClass().getResource("/imagenes/gameover.png")), 0, 0, ANCHOPANTALLA, ALTOPANTALLA, null);
@@ -371,7 +372,8 @@ public class VentanaJuego extends javax.swing.JFrame {
                 Disparo d = new Disparo();
                 d.posicionaDisparoNave(miNave);
 
-                sonidoLaser s = new sonidoLaser();
+                sonido s = new sonido();
+                s._url="/sonidos/laser.wav";
                 s.start();
 
                 //agregamos el disparo a la lista de disparos
